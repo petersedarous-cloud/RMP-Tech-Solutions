@@ -57,7 +57,10 @@ function AuthPage() {
 
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) return toast.error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+    if (password.length < 8) {
+      toast.error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+      return;
+    }
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -65,7 +68,10 @@ function AuthPage() {
       options: { emailRedirectTo: `${window.location.origin}/admin` },
     });
     setLoading(false);
-    if (error) return toast.error("تعذر إنشاء الحساب", { description: error.message });
+    if (error) {
+      toast.error("تعذر إنشاء الحساب", { description: error.message });
+      return;
+    }
     if (!data.session) toast.success("تم إنشاء الحساب", { description: "افتح بريدك الإلكتروني واضغط رابط التأكيد ثم سجّل الدخول." });
   };
 

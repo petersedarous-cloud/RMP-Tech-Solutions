@@ -115,7 +115,7 @@ export function ProductForm({
     setUploading(target);
     try {
       if (target === "main") {
-        set("image_url", await uploadProductImage(files[0]));
+        set("image_url", await uploadProductImage(files[0]!));
       } else {
         const urls: string[] = [];
         for (const f of Array.from(files).slice(0, 8 - d.gallery.length)) urls.push(await uploadProductImage(f));

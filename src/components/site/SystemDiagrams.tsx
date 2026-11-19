@@ -88,7 +88,7 @@ export function ZigbeeMeshDiagram() {
         <line key={n.label} x1={gw.x} y1={gw.y} x2={n.x} y2={n.y} stroke="var(--brand-green)" strokeWidth={2.5} className="animate-dash" />
       ))}
       {mesh.map(([a, b]) => (
-        <line key={`${a}-${b}`} x1={ring[a].x} y1={ring[a].y} x2={ring[b].x} y2={ring[b].y} stroke="var(--brand-green)" strokeOpacity={0.35} strokeWidth={1.5} strokeDasharray="4 6" />
+        <line key={`${a}-${b}`} x1={ring[a]!.x} y1={ring[a]!.y} x2={ring[b]!.x} y2={ring[b]!.y} stroke="var(--brand-green)" strokeOpacity={0.35} strokeWidth={1.5} strokeDasharray="4 6" />
       ))}
       <g>
         <circle cx={cloud.x} cy={cloud.y} r={26} fill="var(--ink)" />

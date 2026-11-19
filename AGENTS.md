@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- TypeScript keeps `strict` + `noUncheckedIndexedAccess` but disables `noPropertyAccessFromIndexSignature` and `exactOptionalPropertyTypes` — they only added noise for zod/JSON-shaped data.
+- Admin product/order CRUD runs from the browser Supabase client under admin-only RLS; public catalog reads go through server functions with the publishable client.
+- Product images live in the private `product-images` bucket and are stored on rows as long-lived signed URLs (public buckets are blocked in this workspace).

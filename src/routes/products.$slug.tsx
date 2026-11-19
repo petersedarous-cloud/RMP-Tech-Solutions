@@ -79,7 +79,7 @@ function ProductPage() {
   const { product, related } = data;
   const images = [product.image_url, ...product.gallery].filter((x): x is string => !!x);
   const off = discountPercent(product.price, product.compare_at_price);
-  const integration = INTEGRATION[product.system] ?? INTEGRATION.standalone;
+  const integration = INTEGRATION[product.system] ?? INTEGRATION.standalone!;
   const inStock = product.stock > 0;
 
   const addToCart = () => {
