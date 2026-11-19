@@ -130,11 +130,12 @@ function AdminProducts() {
 
   const replaceImage = async (files: FileList | null) => {
     const p = imageFor;
+    const file = files?.[0];
     if (fileRef.current) fileRef.current.value = "";
-    if (!p || !files?.[0]) return;
+    if (!p || !file) return;
     setUploadingId(p.id);
     try {
-      const url = await uploadProductImage(files[0]);
+      const url = await uploadProductImage(file);
       await patch.mutateAsync({ id: p.id, values: { image_url: url } });
       toast.success("تم تغيير صورة المنتج");
     } catch (e) {
