@@ -11,7 +11,7 @@ export const orderInput = z.object({
   city: z.string().trim().max(80).optional().or(z.literal("")),
   address: z.string().trim().max(300).optional().or(z.literal("")),
   notes: z.string().trim().max(1000).optional().or(z.literal("")),
-  payment_method: z.enum(["whatsapp", "request"]),
+  payment_method: z.enum(["whatsapp", "request", "card"]),
   items: z
     .array(z.object({ productId: z.string().uuid(), qty: z.number().int().min(1).max(99) }))
     .min(1, "السلة فارغة")
@@ -54,6 +54,7 @@ export const createOrder = createServerFn({ method: "POST" })
         address: data.address || null,
         notes: data.notes || null,
         payment_method: data.payment_method,
+        payment_status: data.payment_method === "card" ? "pending" : "unpaid",
         items,
         total,
       })
@@ -61,4 +62,25 @@ export const createOrder = createServerFn({ method: "POST" })
       .single();
     if (insertError) throw new Error(insertError.message);
     return { id: order.id, orderNumber: Number(order.order_number), total: Number(order.total), items };
+  });
+
+// Public: lets the customer see their own order's payment result after returning from the
+// gateway. The order id is an unguessable UUID; only non-personal fields are returned.
+export const getOrderPaymentStatus = createServerFn({ method: "GET" })
+  .inputValidator((d: { orderId: string }) => z.object({ orderId: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: order, error } = await supabaseAdmin
+      .from("orders")
+      .select("order_number,total,payment_status,payment_method")
+      .eq("id", data.orderId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!order) return null;
+    return {
+      orderNumber: Number(order.order_number),
+      total: Number(order.total),
+      paymentStatus: order.payment_status,
+      paymentMethod: order.payment_method,
+    };
   });

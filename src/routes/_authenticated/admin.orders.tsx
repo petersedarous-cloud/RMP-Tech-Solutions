@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatPrice } from "@/lib/catalog";
+import { PAYMENT_STATUS_LABELS, type PaymentStatus } from "@/lib/payment-status";
+
+const METHOD_LABELS: Record<string, string> = { whatsapp: "واتساب", request: "طلب شراء", card: "دفع بالكارت" };
 
 export const Route = createFileRoute("/_authenticated/admin/orders")({
   component: AdminOrders,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/admin/orders")({
 
 const STATUSES = [
   { value: "new", label: "جديد" },
+  { value: "paid", label: "مدفوع" },
   { value: "contacted", label: "تم التواصل" },
   { value: "completed", label: "مكتمل" },
   { value: "cancelled", label: "ملغي" },
@@ -67,7 +71,7 @@ function AdminOrders() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black md:text-3xl">الطلبات</h1>
-          <p className="text-sm text-muted-foreground">طلبات العملاء من السلة (واتساب وطلب شراء).</p>
+          <p className="text-sm text-muted-foreground">طلبات العملاء من السلة (واتساب، طلب شراء، ودفع بالكارت).</p>
         </div>
         <Select value={filter} onValueChange={setFilter}>
           <SelectTrigger className="w-44" aria-label="الحالة"><SelectValue /></SelectTrigger>
@@ -99,7 +103,7 @@ function AdminOrders() {
                       <p className="font-extrabold">طلب #{o.order_number} — {o.customer_name}</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(o.created_at).toLocaleString("ar-EG")} · {items.length} منتج ·{" "}
-                        {o.payment_method === "whatsapp" ? "واتساب" : "طلب شراء"}
+                        {METHOD_LABELS[o.payment_method] ?? o.payment_method}
                       </p>
                     </div>
                   </button>
@@ -108,6 +112,11 @@ function AdminOrders() {
                     <SelectTrigger className="w-36" aria-label="حالة الطلب"><SelectValue /></SelectTrigger>
                     <SelectContent>{STATUSES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
                   </Select>
+                  {o.payment_method === "card" && (
+                    <Badge variant={o.payment_status === "paid" ? "default" : o.payment_status === "failed" ? "destructive" : "secondary"}>
+                      {PAYMENT_STATUS_LABELS[o.payment_status as PaymentStatus] ?? o.payment_status}
+                    </Badge>
+                  )}
                   {o.status === "new" && <Badge className="bg-brand-green text-primary-foreground">جديد</Badge>}
                 </div>
                 {isOpen && (
@@ -118,6 +127,13 @@ function AdminOrders() {
                       {o.city && <p><b>المدينة:</b> {o.city}</p>}
                       {o.address && <p><b>العنوان:</b> {o.address}</p>}
                       {o.notes && <p><b>ملاحظات:</b> {o.notes}</p>}
+                      {o.payment_method === "card" && (
+                        <p>
+                          <b>الدفع:</b> {PAYMENT_STATUS_LABELS[o.payment_status as PaymentStatus] ?? o.payment_status}
+                          {o.paid_at && <> · {new Date(o.paid_at).toLocaleString("ar-EG")}</>}
+                          {o.payment_reference && <> · <span dir="ltr" className="font-mono text-xs">{o.payment_reference}</span></>}
+                        </p>
+                      )}
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Button asChild size="sm" variant="outline"><a href={`tel:${o.phone}`}><Phone /> اتصال</a></Button>
                         <Button asChild size="sm" variant="outline">

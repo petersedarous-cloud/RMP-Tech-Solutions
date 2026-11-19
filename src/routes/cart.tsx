@@ -160,7 +160,7 @@ function CartPage() {
             <legend className="mb-2 text-sm font-bold">طريقة إتمام الطلب</legend>
             <MethodOption active={method === "whatsapp"} onClick={() => setMethod("whatsapp")} icon={<MessageCircle />} title="إرسال الطلب عبر واتساب" text="يُحفظ طلبك ويُفتح واتساب برسالة جاهزة." />
             <MethodOption active={method === "request"} onClick={() => setMethod("request")} icon={<ClipboardList />} title="طلب شراء والتواصل معي" text="يصل طلبك لفريق المبيعات وسيتصلون بك للتأكيد." />
-            <MethodOption active={method === "card"} onClick={() => setMethod("card")} icon={<CreditCard />} title="الدفع أونلاين بالكارت" text="قريباً — جاري تفعيل بوابة الدفع." disabled />
+            <MethodOption active={method === "card"} onClick={() => setMethod("card")} icon={<CreditCard />} title="الدفع أونلاين بالكارت" text="قريباً — سيتم التفعيل بعد ربط شركة الدفع." disabled />
           </fieldset>
 
           {errors.items && <p className="text-sm text-destructive">{errors.items}</p>}

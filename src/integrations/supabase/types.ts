@@ -25,7 +25,11 @@ export type Database = {
           items: Json
           notes: string | null
           order_number: number
+          paid_at: string | null
           payment_method: string
+          payment_provider: string | null
+          payment_reference: string | null
+          payment_status: string
           phone: string
           status: string
           total: number
@@ -40,7 +44,11 @@ export type Database = {
           items?: Json
           notes?: string | null
           order_number?: never
+          paid_at?: string | null
           payment_method?: string
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           phone: string
           status?: string
           total?: number
@@ -55,7 +63,11 @@ export type Database = {
           items?: Json
           notes?: string | null
           order_number?: never
+          paid_at?: string | null
           payment_method?: string
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           phone?: string
           status?: string
           total?: number
